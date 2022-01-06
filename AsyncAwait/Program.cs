@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AsyncAwait
@@ -15,17 +16,27 @@ namespace AsyncAwait
             var baconTask = FryBaconAsync(3);
             var toastTask = MakeToastWithButterAndJamAsync(2);
 
-            var eggs = await eggsTask;
-            Console.WriteLine("Eikes zijn klaar");
-
-            var bacon = await baconTask;
-            Console.WriteLine("Spek is klaar");
-
-            var toast = await toastTask;
-            Console.WriteLine("Toast is klaar");
+            var listOfTasks = new List<Task> { eggsTask, baconTask, toastTask };
+            while (listOfTasks.Count > 0 )
+            {
+                Task finishedTask = await Task.WhenAny(listOfTasks);
+                if (finishedTask == eggsTask)
+                {
+                    Console.WriteLine("Eikes zijn klaar");
+                }
+                else if (finishedTask == baconTask)
+                {
+                    Console.WriteLine("Spek is klaar");
+                }
+                else if(finishedTask == toastTask)
+                {
+                    Console.WriteLine("Toast is klaar");
+                }
+                listOfTasks.Remove(finishedTask);
+            }
 
             Juice oj = PourOj();
-            Console.WriteLine("Oj is Ready");
+            Console.WriteLine("De sudorans is klaar");
 
             Console.WriteLine("Breakfast is ready!");
 
@@ -59,13 +70,10 @@ namespace AsyncAwait
             {
                 Console.WriteLine("Leg een sneeke brood in den toaster");
             }
-            Console.WriteLine("Start toasten ...");
-            await Task.Delay(2000);
             Console.WriteLine("Start het toasten");
-            await Task.Delay(2000);
-            Console.WriteLine("Shit is aangebrand ...");
-            throw new InvalidOperationException("The toaster is on fire !");
-            await Task.Delay(1000);
+            await Task.Delay(3000);
+            //Console.WriteLine("Shit is aangebrand ...");
+            //throw new InvalidOperationException("The toaster is on fire !");
             Console.WriteLine("Haal toast uit den toaster");
 
             return new Toast();
