@@ -5,26 +5,29 @@ namespace AsyncAwait
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             Coffee cup = PourCoffee();
-            Console.WriteLine("Koffie'ke is klaar sé ! ");
+            Console.WriteLine("Koffie is klaar");
 
-            Egg eggs = FryEggs(2);
-            Console.WriteLine("Eitjes zijn klaar");
+            Task<Egg> eggsTask = FryEggsAsync(2);
+            Task<Bacon> baconTask = FryBaconAsync(3);
+            Task<Toast> toastTask = ToastBreadAsync(2);
 
-            Bacon bacon = FryBacon(3);
-            Console.WriteLine("'T spek is klaar ");
-
-            Toast toast = ToastBread(2);
+            Toast toast = await toastTask;
             ApplyButter(toast);
             ApplyJam(toast);
-            Console.WriteLine("Den toast is ready");
-
+            Console.WriteLine("toast is ready");
             Juice oj = PourOj();
-            Console.WriteLine("Fruitsapken is klaar ");
-            Console.WriteLine("GET BREAKFAST, SMAKELIJK !  ");
+            Console.WriteLine("oj is ready");
+
+            Egg egss = await eggsTask;
+            Console.WriteLine("Eggs are ready");
+            Bacon bacon = await baconTask;
+            Console.WriteLine("Bacon is ready");
+
+            Console.WriteLine("Breakfast is ready!");
 
             Console.ReadLine();
         }
@@ -41,7 +44,7 @@ namespace AsyncAwait
         private static void ApplyButter(Toast toast) =>
             Console.WriteLine("Boter aan't smeren");
 
-        private static Toast ToastBread(int slices)
+        private static async Task<Toast> ToastBreadAsync(int slices)
         {
             for (int slice = 0; slice < slices; slice++)
             {
@@ -54,7 +57,7 @@ namespace AsyncAwait
             return new Toast();
         }
 
-        private static Bacon FryBacon(int slices)
+        private static async Task<Bacon> FryBaconAsync(int slices)
         {
             Console.WriteLine($"Leg {slices} sneekes spek in de pan");
             Console.WriteLine("Eerste kant de spek aant bakken");
@@ -69,7 +72,7 @@ namespace AsyncAwait
             return new Bacon();
         }
 
-        private static Egg FryEggs(int howMany)
+        private static async Task<Egg> FryEggsAsync(int howMany)
         {
             Console.WriteLine("Pan voorverwarmen...");
             Task.Delay(3000).Wait();
