@@ -11,27 +11,36 @@ namespace AsyncAwait
             Coffee cup = PourCoffee();
             Console.WriteLine("Koffie is klaar");
 
-            Task<Egg> eggsTask = FryEggsAsync(2);
-            Task<Bacon> baconTask = FryBaconAsync(3);
-            Task<Toast> toastTask = ToastBreadAsync(2);
+            var eggsTask = FryEggsAsync(2);
+            var baconTask = FryBaconAsync(3);
+            var toastTask = MakeToastWithButterAndJamAsync(2);
 
-            Toast toast = await toastTask;
-            ApplyButter(toast);
-            ApplyJam(toast);
-            Console.WriteLine("toast is ready");
+            var eggs = await eggsTask;
+            Console.WriteLine("Eikes zijn klaar");
+
+            var bacon = await baconTask;
+            Console.WriteLine("Spek is klaar");
+
+            var toast = await toastTask;
+            Console.WriteLine("Toast is klaar");
+
             Juice oj = PourOj();
-            Console.WriteLine("oj is ready");
-
-            Egg egss = await eggsTask;
-            Console.WriteLine("Eggs are ready");
-            Bacon bacon = await baconTask;
-            Console.WriteLine("Bacon is ready");
+            Console.WriteLine("Oj is Ready");
 
             Console.WriteLine("Breakfast is ready!");
 
             Console.ReadLine();
         }
 
+
+        static async Task<Toast> MakeToastWithButterAndJamAsync(int number)
+        {
+            Toast toast = await ToastBreadAsync(number);
+            ApplyButter(toast);
+            ApplyJam(toast);
+
+            return toast;
+        }
         private static Juice PourOj()
         {
             Console.WriteLine("Fruitsapke Persen");
@@ -51,7 +60,12 @@ namespace AsyncAwait
                 Console.WriteLine("Leg een sneeke brood in den toaster");
             }
             Console.WriteLine("Start toasten ...");
-            Task.Delay(3000).Wait();
+            await Task.Delay(2000);
+            Console.WriteLine("Start het toasten");
+            await Task.Delay(2000);
+            Console.WriteLine("Shit is aangebrand ...");
+            throw new InvalidOperationException("The toaster is on fire !");
+            await Task.Delay(1000);
             Console.WriteLine("Haal toast uit den toaster");
 
             return new Toast();
@@ -61,12 +75,14 @@ namespace AsyncAwait
         {
             Console.WriteLine($"Leg {slices} sneekes spek in de pan");
             Console.WriteLine("Eerste kant de spek aant bakken");
-            Task.Delay(3000).Wait();
+            await Task.Delay(3000);
             for (int slice = 0; slice < slices; slice++)
             {
                 Console.WriteLine(@" ¯\_(ツ)_/¯");
-                Console.WriteLine("BACON FLIP");
+                Console.WriteLine("FLIPPING THE BACON");
             }
+            Console.WriteLine("Andere kant van de spek bakken");
+            await Task.Delay(3000);
             Console.WriteLine("Leg spek op het bord");
 
             return new Bacon();
@@ -75,10 +91,10 @@ namespace AsyncAwait
         private static async Task<Egg> FryEggsAsync(int howMany)
         {
             Console.WriteLine("Pan voorverwarmen...");
-            Task.Delay(3000).Wait();
+            await Task.Delay(3000);
             Console.WriteLine($"Kraak {howMany} eikes");
             Console.WriteLine("Eike aan't bakken ...");
-            Task.Delay(3000).Wait();
+            await Task.Delay(3000);
             Console.WriteLine("Leg eikes op't bord");
 
             return new Egg();
